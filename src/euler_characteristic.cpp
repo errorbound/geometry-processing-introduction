@@ -1,6 +1,8 @@
 #include "euler_characteristic.h"
 #include "edges.h"
 
+// Return the euler characteristic value of the polyhedral surface 
+// described by the given faces matrix F
 int euler_characteristic(const Eigen::MatrixXi &F)
 {
   int Chi;
@@ -11,7 +13,8 @@ int euler_characteristic(const Eigen::MatrixXi &F)
   Eigen::MatrixXi E = edges(F);
   nedges = E.rows(); 
 
-  // Still need to find the number of vertices; don't know how many edges go to each vertex
+  // Need to calculate number of vertices
+  // Keep track of largest seen vertex index
   int maxv = 0; 
   for (int f = 0; f < F.rows(); ++f) {
     if (F(f, 0) > maxv)

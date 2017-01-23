@@ -3,7 +3,7 @@
 #include <list>
 #include <algorithm>
 
-// Order the vertices from smallest to largest 
+// Sort the input (a,b,c) in increasing order and return in (i0, i1, i2) 
 void orderIndices(int a, int b, int c, int &i0, int &i1, int &i2) 
 {
      // Order the vertices from smallest to largest
@@ -47,14 +47,18 @@ void orderIndices(int a, int b, int c, int &i0, int &i1, int &i2)
     }
 }
 
+// Given a surface's face matrix F, return a matrix E 
+// consisting of the unique, undirected edges of the surface. 
 Eigen::MatrixXi edges(const Eigen::MatrixXi &F)
 {
   Eigen::MatrixXi E(3*F.rows(), 2); 
  
-  // There are at most 3*F unique vertices
+  // Store edges in an array of lists, indexed by the smaller vertex of the edge
+  // At most 3*F.rows() unique vertices
   std::list<int> verte[3*F.rows()];
  
-  // For each face (a,b,c)
+  // For each face (i0, i1, i2), where i0 <= i1 <= i2, 
+  // Add edges (i0, i1), (i0, i2), (i1, i2) 
   int i0, i1, i2;
   for (int f = 0; f < F.rows(); ++f) {
     orderIndices(F(f, 0), F(f, 1), F(f, 2), i0, i1, i2);
@@ -70,7 +74,7 @@ Eigen::MatrixXi edges(const Eigen::MatrixXi &F)
     if (verte[vi].size() < 1)
       continue; 
     
-    verte[vi].sort();
+    verte[vi].sort(); 
     
     for (std::list<int>::iterator vit = verte[vi].begin(); vit != verte[vi].end(); ++vit) { 
       if (laste != *vit) { // not a duplicate
@@ -82,7 +86,7 @@ Eigen::MatrixXi edges(const Eigen::MatrixXi &F)
     }
     laste = -1; 
   }
-  
+ 
   E.resize(edges, 2);
  
   return E;
